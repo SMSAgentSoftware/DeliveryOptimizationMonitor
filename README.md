@@ -1,4 +1,5 @@
-!(https://raw.githubusercontent.com/SMSAgentSoftware/DeliveryOptimizationMonitor/master/bin/Peer.ico)
+![](https://raw.githubusercontent.com/SMSAgentSoftware/DeliveryOptimizationMonitor/master/bin/Peer.ico)
+# Delivery Optimization Monitor
 A tool for viewing Delivery Optmization data on the local or remote computer
 
 ![Delivery Optimization Monitor](https://github.com/SMSAgentSoftware/DeliveryOptimizationMonitor/raw/master/Assets/DO%20Monitor.PNG)
