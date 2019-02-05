@@ -1,0 +1,80 @@
+﻿<Window 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        Title="Delivery Optimization Monitor" Height="500" Width="800" WindowStartupLocation="CenterScreen" MinHeight="400" MinWidth="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Crimson.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="True">
+            <TextBox Name="ComputerName" Controls:TextBoxHelper.Watermark="ComputerName" Controls:TextBoxHelper.ClearTextButton="True" Width="300" Margin="2" Padding="2" />
+            <TextBlock Width="Auto" HorizontalAlignment="Stretch" />
+            <Button Name="Go" Content="Go" Width="150" HorizontalAlignment="Right" Margin="2" />
+        </DockPanel>
+        <TabControl Grid.Row="1">
+            <TabItem Header="This Month">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Grid.Column="0" Name="DG_ThisMonth" Margin="2" ItemsSource="{Binding [3].DefaultView}" AutoGenerateColumns="True" CanUserAddRows="False" IsReadOnly="True"/>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2.5*"/>
+                            <RowDefinition Height="2.5*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Download Statistics" FontSize="16" Width="80" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                        <lvc:PieChart Grid.Row="0" Name="DownloadChart" Series="{Binding [6]}" LegendLocation="Bottom" InnerRadius="30" Margin="2" Visibility="{Binding [8]}">
+                            <lvc:PieChart.ChartLegend>
+                                <lvc:DefaultLegend BulletSize="10"></lvc:DefaultLegend>
+                            </lvc:PieChart.ChartLegend>
+                            <lvc:PieChart.DataTooltip>
+                                <lvc:DefaultTooltip BulletSize="10" SelectionMode="OnlySender"></lvc:DefaultTooltip>
+                            </lvc:PieChart.DataTooltip>
+                        </lvc:PieChart>
+                        <TextBlock Grid.Row="1" Text="Upload Statistics" FontSize="16" Width="80" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                        <lvc:PieChart Grid.Row="1" Name="UploadChart" Series="{Binding [7]}" LegendLocation="Bottom" InnerRadius="30" Margin="2" Visibility="{Binding [8]}">
+                            <lvc:PieChart.ChartLegend>
+                                <lvc:DefaultLegend BulletSize="10"></lvc:DefaultLegend>
+                            </lvc:PieChart.ChartLegend>
+                            <lvc:PieChart.DataTooltip>
+                                <lvc:DefaultTooltip BulletSize="10" SelectionMode="OnlySender"></lvc:DefaultTooltip>
+                            </lvc:PieChart.DataTooltip>
+                        </lvc:PieChart>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Performance Snapshot">
+                <DataGrid Name="DG_PerfSnap" Margin="2" ItemsSource="{Binding [4].DefaultView}" AutoGenerateColumns="True" CanUserAddRows="False" IsReadOnly="True"/>
+            </TabItem>
+            <TabItem Header="Current Jobs">
+                <DataGrid Name="DG_Status" Margin="2" ItemsSource="{Binding [5].DefaultView}" AutoGenerateColumns="True" CanUserAddRows="False" IsReadOnly="True"/>
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="2">
+            <Controls:MetroProgressBar IsIndeterminate="{Binding [0]}" />
+            <StatusBar Background="White">
+                <StatusBarItem>
+                    <TextBlock Name="Status1" TextWrapping="Wrap" Text="{Binding [1]}" Foreground="{Binding [2]}" VerticalAlignment="Center"/>
+                </StatusBarItem>
+            </StatusBar>
+        </StackPanel>
+    </Grid>
+</Window>
