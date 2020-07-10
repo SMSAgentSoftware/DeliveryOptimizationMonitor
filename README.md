@@ -1,4 +1,3 @@
-![](https://raw.githubusercontent.com/SMSAgentSoftware/DeliveryOptimizationMonitor/master/bin/Peer.ico)
 # Delivery Optimization Monitor
 A tool for viewing Delivery Optimization data on the local or remote computer
 
@@ -13,9 +12,6 @@ The tool uses the Delivery Optimization cmdlets built in to Windows 10 to retrie
 * PS Remoting enabled to view data from remote computers. 
 
 This WPF tool is coded in Xaml and PowerShell and uses the MahApps.Metro and LiveCharts open source libraries.
-
-## Download
-A ZIP file can be downloaded from the [TechNet Gallery](https://gallery.technet.microsoft.com/Delivery-Optimization-3eff74ac)
 
 ## Use
 To use the tool, extract the ZIP file, right-click the Delivery Optimization Monitor.ps1 and run with PowerShell.
