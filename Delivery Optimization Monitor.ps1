@@ -90,7 +90,7 @@ $DownloadSeries.DataLabels = $true
 $DownloadSeriesCollection.Add($DownloadSeries)
 
 $DownloadSeries = [LiveCharts.Wpf.PieSeries]::new()
-$DownloadSeries.Title = "From PCs on the local network"
+$DownloadSeries.Title = "From Microsoft cache server"
 $DownloadSeriesValue = [LiveCharts.ChartValues[LiveCharts.Defaults.ObservableValue]]::new()
 $DownloadSeriesValue.Add([LiveCharts.Defaults.ObservableValue]::new(0))
 $DownloadSeries.Values = $DownloadSeriesValue
@@ -98,7 +98,15 @@ $DownloadSeries.DataLabels = $true
 $DownloadSeriesCollection.Add($DownloadSeries)
 
 $DownloadSeries = [LiveCharts.Wpf.PieSeries]::new()
-$DownloadSeries.Title = "From PCs on the internet"
+$DownloadSeries.Title = "From PCs on your local network"
+$DownloadSeriesValue = [LiveCharts.ChartValues[LiveCharts.Defaults.ObservableValue]]::new()
+$DownloadSeriesValue.Add([LiveCharts.Defaults.ObservableValue]::new(0))
+$DownloadSeries.Values = $DownloadSeriesValue
+$DownloadSeries.DataLabels = $true
+$DownloadSeriesCollection.Add($DownloadSeries)
+
+$DownloadSeries = [LiveCharts.Wpf.PieSeries]::new()
+$DownloadSeries.Title = "From PCs on the Internet"
 $DownloadSeriesValue = [LiveCharts.ChartValues[LiveCharts.Defaults.ObservableValue]]::new()
 $DownloadSeriesValue.Add([LiveCharts.Defaults.ObservableValue]::new(0))
 $DownloadSeries.Values = $DownloadSeriesValue
