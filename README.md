@@ -20,3 +20,6 @@ To run against the local machine, you must run the tool elevated. To do so, crea
 
 Right-click the shortcut and run as administrator, or edit the shortcut properties (under Advanced) to run as administrator.
 For completeness, you can also change the icon of the shortcut to the icon file included in the bin directory.
+
+## Change log
+2023.12.18 - [v1.1] - Data is now returned again! Added Microsoft cache server. Minor cosmetic updates.
