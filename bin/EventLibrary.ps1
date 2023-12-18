@@ -21,6 +21,7 @@ $UI.GO.Add_Click({
     $UI.DataSource[6][0].Values[0].Value = 0
     $UI.DataSource[6][1].Values[0].Value = 0
     $UI.DataSource[6][2].Values[0].Value = 0
+    $UI.DataSource[6][3].Values[0].Value = 0
     $UI.DataSource[7][0].Values[0].Value = 0
     $UI.DataSource[7][1].Values[0].Value = 0
     $UI.DataSource[8] = "Visible"
@@ -108,37 +109,90 @@ $UI.GO.Add_Click({
             [void]$DOPerfSnapTMTable.Columns.Add("Statistic")
             [void]$DOPerfSnapTMTable.Columns.Add("Value")
 
-            # Convert to a useable object
-            [pscustomobject]$Obj = @{}
-            Foreach ($Item in $DOPerfSnapTM)
+            # Percentages
+            $DownloadTotal = ([double]$DOPerfSnapTM.DownloadHttpBytes + [double]$DOPerfSnapTM.DownloadLanBytes + [double]$DOPerfSnapTM.DownloadInternetBytes + [double]$DOPerfSnapTM.DownloadCacheHostBytes)
+            $Percent_DownloadHttpBytes = [Math]::Round((100 * ([double]$DOPerfSnapTM.DownloadHttpBytes / $DownloadTotal)),2)
+            $Percent_MonthlyDownloadCacheServerBytes = [Math]::Round((100 * ([double]$DOPerfSnapTM.DownloadCacheHostBytes / $DownloadTotal)),2)
+            $Percent_MonthlyDownloadLanBytes = [Math]::Round((100 * ([double]$DOPerfSnapTM.DownloadLanBytes / $DownloadTotal)),2)
+            $Percent_MonthlyDownloadInternetBytes = [Math]::Round((100 * ([double]$DOPerfSnapTM.DownloadInternetBytes / $DownloadTotal)),2)
+
+            # Decide on values
+            If ($DOPerfSnapTM.UploadLanBytes.ToString().Length -le 9)
             {
-                $Obj.Add($Item.Split()[0], $Item.Split()[-1])
+                $UploadLan = "$([math]::Round(($DOPerfSnapTM.UploadLanBytes / 1MB),2)) MB"
+            }
+            else 
+            {
+                $UploadLan = "$([math]::Round(($DOPerfSnapTM.UploadLanBytes / 1GB),2)) GB"
+            }
+            If ($DOPerfSnapTM.UploadInternetBytes.ToString().Length -le 9)
+            {
+                $UploadInternet = "$([math]::Round(($DOPerfSnapTM.UploadInternetBytes / 1MB),2)) MB"
+            }
+            else 
+            {
+                $UploadInternet = "$([math]::Round(($DOPerfSnapTM.UploadInternetBytes / 1GB),2)) GB"
+            }
+            If ($DOPerfSnapTM.DownloadHttpBytes.ToString().Length -le 9)
+            {
+                $DownloadMicrosoft = "$([math]::Round(($DOPerfSnapTM.DownloadHttpBytes / 1MB),2)) MB ($Percent_DownloadHttpBytes %)"
+            }
+            else 
+            {
+                $DownloadMicrosoft = "$([math]::Round(($DOPerfSnapTM.DownloadHttpBytes / 1GB),2)) GB ($Percent_DownloadHttpBytes %)"
+            }
+            If ($DOPerfSnapTM.DownloadCacheHostBytes.ToString().Length -le 9)
+            {
+                $DownloadCacheHost = "$([math]::Round(($DOPerfSnapTM.DownloadCacheHostBytes / 1MB),2)) MB ($Percent_MonthlyDownloadCacheServerBytes %)"
+            }
+            else 
+            {
+                $DownloadCacheHost = "$([math]::Round(($DOPerfSnapTM.DownloadCacheHostBytes / 1GB),2)) GB ($Percent_MonthlyDownloadCacheServerBytes %)"
+            }
+            If ($DOPerfSnapTM.DownloadCacheHostBytes.ToString().Length -le 9)
+            {
+                $DownloadCacheHost = "$([math]::Round(($DOPerfSnapTM.DownloadCacheHostBytes / 1MB),2)) MB ($Percent_MonthlyDownloadCacheServerBytes %)"
+            }
+            else 
+            {
+                $DownloadCacheHost = "$([math]::Round(($DOPerfSnapTM.DownloadCacheHostBytes / 1GB),2)) GB ($Percent_MonthlyDownloadCacheServerBytes %)"
+            }
+            If ($DOPerfSnapTM.DownloadLanBytes.ToString().Length -le 9)
+            {
+                $DownloadLan = "$([math]::Round(($DOPerfSnapTM.DownloadLanBytes / 1MB),2)) MB ($Percent_MonthlyDownloadLanBytes %)"
+            }
+            else 
+            {
+                $DownloadLan = "$([math]::Round(($DOPerfSnapTM.DownloadLanBytes / 1GB),2)) GB ($Percent_MonthlyDownloadLanBytes %)"
+            }
+            If ($DOPerfSnapTM.DownloadInternetBytes.ToString().Length -le 9)
+            {
+                $DownloadInternet = "$([math]::Round(($DOPerfSnapTM.DownloadInternetBytes / 1MB),2)) MB ($Percent_MonthlyDownloadInternetBytes %)"
+            }
+            else 
+            {
+                $DownloadInternet = "$([math]::Round(($DOPerfSnapTM.DownloadInternetBytes / 1GB),2)) GB ($Percent_MonthlyDownloadInternetBytes %)"
             }
 
-
-            # Percentages
-            $DownloadTotal = ([int]$Obj.MonthlyDownloadHttpBytes + [int]$Obj.MonthlyDownloadLanBytes + [int]$Obj.MonthlyDownloadInternetBytes)
-            $Percent_DownloadHttpBytes = [Math]::Round((100 * ([int]$Obj.MonthlyDownloadHttpBytes / $DownloadTotal)),2)
-            $Percent_MonthlyDownloadLanBytes = [Math]::Round((100 * ([int]$Obj.MonthlyDownloadLanBytes / $DownloadTotal)),2)
-            $Percent_MonthlyDownloadInternetBytes = [Math]::Round((100 * ([int]$Obj.MonthlyDownloadInternetBytes / $DownloadTotal)),2)
-
             # Populate table
-            [void]$DOPerfSnapTMTable.Rows.Add("Start Date", $Obj.MonthStartDate)
-            [void]$DOPerfSnapTMTable.Rows.Add("Uploaded to PCs on the local network", "$([math]::Round(($Obj.MonthlyUploadLanBytes / 1MB),2)) MB")
-            [void]$DOPerfSnapTMTable.Rows.Add("Uploaded to PCs on the internet", "$([math]::Round(($Obj.MonthlyUploadInternetBytes / 1MB),2)) MB")
-            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from Microsoft", "$([math]::Round(($Obj.MonthlyDownloadHttpBytes/ 1MB),2)) MB ($Percent_DownloadHttpBytes %)")
-            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from PCs on your local network", "$([math]::Round(($Obj.MonthlyDownloadLanBytes / 1MB),2)) MB ($Percent_MonthlyDownloadLanBytes %)")
-            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from PCs on the internet", "$([math]::Round(($Obj.MonthlyDownloadInternetBytes / 1MB),2)) MB ($Percent_MonthlyDownloadInternetBytes %)")
-            [void]$DOPerfSnapTMTable.Rows.Add("Average download speed (user initiated)", "$([math]::Round(($Obj.MonthlyDownloadFgRateKbps / 1024),2)) Mbps")
-            [void]$DOPerfSnapTMTable.Rows.Add("Average download speed (background)", "$([math]::Round(($Obj.MonthlyDownloadBgRateKbps / 1024),2)) Mbps")
-            [void]$DOPerfSnapTMTable.Rows.Add("Monthly Upload Limit Reached", $Obj.MonthlyUploadLimitReached)
+            [void]$DOPerfSnapTMTable.Rows.Add("Start Date", $DOPerfSnapTM.MonthStartDate.ToShortDateString())
+            [void]$DOPerfSnapTMTable.Rows.Add("Uploaded to PCs on your local network", $UploadLan)
+            [void]$DOPerfSnapTMTable.Rows.Add("Uploaded to PCs on the Internet", $UploadInternet)
+            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from Microsoft", $DownloadMicrosoft)
+            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from Microsoft cache server", $DownloadCacheHost)
+            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from PCs on your local network", $DownloadLan)
+            [void]$DOPerfSnapTMTable.Rows.Add("Downloaded from PCs on the Internet", $DownloadInternet)
+            [void]$DOPerfSnapTMTable.Rows.Add("Average download speed (user initiated)", "$([math]::Round(($DOPerfSnapTM.DownloadFgRateKbps / 1024),2)) Mbps")
+            [void]$DOPerfSnapTMTable.Rows.Add("Average download speed (background)", "$([math]::Round(($DOPerfSnapTM.DownloadBgRateKbps / 1024),2)) Mbps")
+            [void]$DOPerfSnapTMTable.Rows.Add("Monthly Upload Limit Reached", $DOPerfSnapTM.UploadLimitReached)
 
             # Populate Charts
-            $UI.DataSource[6][0].Values[0].Value = $([math]::Round(($Obj.MonthlyDownloadHttpBytes/ 1MB),2))
-            $UI.DataSource[6][1].Values[0].Value = $([math]::Round(($Obj.MonthlyDownloadLanBytes / 1MB),2))
-            $UI.DataSource[6][2].Values[0].Value = $([math]::Round(($Obj.MonthlyDownloadInternetBytes / 1MB),2))
-            $UI.DataSource[7][0].Values[0].Value = $([math]::Round(($Obj.MonthlyUploadInternetBytes/ 1MB),2))
-            $UI.DataSource[7][1].Values[0].Value = $([math]::Round(($Obj.MonthlyUploadLanBytes / 1MB),2))
+            $UI.DataSource[6][0].Values[0].Value = $([math]::Round(($DOPerfSnapTM.DownloadHttpBytes/ 1MB),2))
+            $UI.DataSource[6][1].Values[0].Value = $([math]::Round(($DOPerfSnapTM.DownloadCacheHostBytes/ 1MB),2))
+            $UI.DataSource[6][2].Values[0].Value = $([math]::Round(($DOPerfSnapTM.DownloadLanBytes / 1MB),2))
+            $UI.DataSource[6][3].Values[0].Value = $([math]::Round(($DOPerfSnapTM.DownloadInternetBytes / 1MB),2))
+            $UI.DataSource[7][0].Values[0].Value = $([math]::Round(($DOPerfSnapTM.UploadInternetBytes/ 1MB),2))
+            $UI.DataSource[7][1].Values[0].Value = $([math]::Round(($DOPerfSnapTM.UploadLanBytes / 1MB),2))
 
         }
         ElseIf ($DOPerfSnapTM.GetType().Name -eq "String")
@@ -165,18 +219,14 @@ $UI.GO.Add_Click({
         
         If ($DOPerfSnap.Count -ge 1 -and $DOPerfSnap.GetType().Name -ne "String")
         {            
-            [pscustomobject]$Obj = @{}
-            Foreach ($Item in $DOPerfSnap)
-            {
-                $Obj.Add($Item.Split()[0], $Item.Split()[-1])
-            }
+            $PropertyNames = $DOPerfSnap | Get-Member -MemberType Property | Select -ExpandProperty Name
 
             [void]$DOPerfSnapTable.Columns.Add("Statistic")
             [void]$DOPerfSnapTable.Columns.Add("Value")
 
-            Foreach ($Item in $Obj.Keys)
+            Foreach ($Property in $PropertyNames)
             {
-                [void]$DOPerfSnapTable.Rows.Add($Item, $obj["$item"])
+                [void]$DOPerfSnapTable.Rows.Add($Property, $DOPerfSnap.$Property)
             }
         }
         ElseIf ($DOPerfSnap.GetType().Name -eq "String")
